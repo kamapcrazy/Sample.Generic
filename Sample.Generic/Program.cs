@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using Sample.Generic.Services;
 using Sample.Generic.Services.Interfaces;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -15,17 +17,37 @@ namespace Sample.Generic
 
         static void Main(string[] args)
         {
-            var test = GetTestObject();
+            IEnumerable<TestDynamic> test = GetListObject();
 
-            if (test.Prop3?.Child1 != null)
-                Console.WriteLine("null");
+            Update(test);
 
-            Console.WriteLine(test);
+            Console.WriteLine(string.Join(", ", test.Select(x => x.Prop1)));
 
             Console.ReadLine();
         }
 
-        private static dynamic GetTestObject()
+        private static void Update(IEnumerable<TestDynamic> input)
+        {
+            foreach (var item in input)
+            {
+                item.Prop1 = "updated";
+            }
+        }
+
+        public static void AssignmentAction(string x)
+        {
+            x = x + "updated";
+        }
+
+        private static IEnumerable<TestDynamic> GetListObject()
+        {
+            var test = new List<TestDynamic>();
+            for (var i = 1; i < 10; i++)
+                test.Add(GetTestObject());
+            return test;
+        }
+
+        private static TestDynamic GetTestObject()
         {
             var test = new TestDynamic
             {
